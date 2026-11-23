@@ -25,7 +25,9 @@ export function stopScroll() {
   scrollLockCount++;
   if (scrollLockCount === 1) {
     if (lenisInstance) {
-      lenisInstance.stop();
+      try {
+        lenisInstance.stop();
+      } catch (e) {}
     }
     originalBodyOverflow = document.body.style.overflow;
     originalHtmlOverflow = document.documentElement.style.overflow;
@@ -39,7 +41,9 @@ export function startScroll() {
   scrollLockCount = Math.max(0, scrollLockCount - 1);
   if (scrollLockCount === 0) {
     if (lenisInstance) {
-      lenisInstance.start();
+      try {
+        lenisInstance.start();
+      } catch (e) {}
     }
     document.body.style.overflow = originalBodyOverflow || "";
     document.documentElement.style.overflow = originalHtmlOverflow || "";
@@ -47,20 +51,53 @@ export function startScroll() {
   }
 }
 
-export function scrollToId(id) {
-  const el = document.querySelector(id);
-  if (!el) return;
+export function forceUnlockScroll() {
+  scrollLockCount = 0;
   if (lenisInstance) {
-    lenisInstance.scrollTo(el, { offset: -72, duration: 1.4 });
-  } else {
-    el.scrollIntoView({ behavior: "smooth" });
+    try {
+      lenisInstance.start();
+    } catch (e) {}
   }
+  document.body.style.overflow = originalBodyOverflow || "";
+  document.documentElement.style.overflow = originalHtmlOverflow || "";
+  document.body.classList.remove("modal-open");
+}
+
+export function scrollToId(id) {
+  if (!id) return;
+  const cleanId = id.startsWith("#") ? id.slice(1) : id;
+  const el = document.getElementById(cleanId) || document.querySelector(id);
+  if (!el) return;
+
+  // Make sure scroll lock is completely dismantled
+  forceUnlockScroll();
+
+  const navOffset = -76;
+  if (lenisInstance) {
+    try {
+      lenisInstance.start();
+      lenisInstance.scrollTo(el, { offset: navOffset, duration: 1.2 });
+      return;
+    } catch (e) {}
+  }
+
+  // Native smooth scroll fallback
+  const elementPosition = el.getBoundingClientRect().top;
+  const offsetPosition = elementPosition + window.pageYOffset + navOffset;
+  window.scrollTo({
+    top: Math.max(0, offsetPosition),
+    behavior: "smooth",
+  });
 }
 
 export function scrollTop() {
+  forceUnlockScroll();
   if (lenisInstance) {
-    lenisInstance.scrollTo(0, { duration: 1.4 });
-  } else {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    try {
+      lenisInstance.start();
+      lenisInstance.scrollTo(0, { duration: 1.2 });
+      return;
+    } catch (e) {}
   }
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }

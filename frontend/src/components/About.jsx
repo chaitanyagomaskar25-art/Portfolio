@@ -1,28 +1,9 @@
-import { useEffect, useState } from "react";
-import { Clock, MapPin, Quote } from "lucide-react";
+import { MapPin, Quote } from "lucide-react";
 import SectionHeading from "./SectionHeading";
 import Reveal from "./Reveal";
 import { ABOUT_IMAGE, CURRENT_STRIP, PROFILE } from "../data/portfolio";
 
 export default function About() {
-  const [time, setTime] = useState("--:--:--");
-
-  useEffect(() => {
-    const tick = () =>
-      setTime(
-        new Intl.DateTimeFormat("en-US", {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-          timeZone: PROFILE.timezone,
-        }).format(new Date()),
-      );
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, []);
-
   return (
     <section id="about" className="relative border-t border-white/[0.04] py-28 sm:py-36">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
@@ -33,20 +14,20 @@ export default function About() {
 
         <div className="mt-16 grid gap-6 md:grid-cols-12">
           <Reveal delay={0.05} className="md:col-span-5 md:row-span-2">
-            <div className="group relative h-full min-h-[340px] overflow-hidden rounded-[20px] border border-white/8">
+            <div className="group relative h-full min-h-[340px] overflow-hidden rounded-[20px] border border-white/8 bg-[#0B0F17]">
               <img
                 src={ABOUT_IMAGE.url}
                 alt={ABOUT_IMAGE.alt}
                 loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover opacity-80 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105"
+                className="absolute inset-0 h-full w-full object-cover object-top opacity-90 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 group-hover:opacity-100"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#05070C] via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#05070C] via-[#05070C]/25 to-transparent" />
               <div className="absolute bottom-6 left-6 right-6">
                 <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-emerald-300">
-                  The workspace
+                  {PROFILE.name}
                 </p>
                 <p className="mt-1.5 font-display text-lg font-semibold text-slate-100">
-                  Late-night builds, quiet focus
+                  {PROFILE.role}
                 </p>
               </div>
             </div>
@@ -67,11 +48,13 @@ export default function About() {
           </Reveal>
 
           <Reveal delay={0.15} className="md:col-span-4">
-            <div className="surface card-hover h-full rounded-[20px] p-9">
-              <Quote className="h-6 w-6 text-emerald-400" />
-              <p className="mt-6 font-serif text-2xl italic leading-snug text-slate-100">
-                “{PROFILE.philosophy}”
-              </p>
+            <div className="surface card-hover flex h-full flex-col justify-between rounded-[20px] p-9">
+              <div>
+                <Quote className="h-6 w-6 text-emerald-400" />
+                <p className="mt-6 font-serif text-2xl italic leading-snug text-slate-100">
+                  “{PROFILE.philosophy}”
+                </p>
+              </div>
               <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500">
                 How I work
               </p>
@@ -80,22 +63,15 @@ export default function About() {
 
           <Reveal delay={0.2} className="md:col-span-3">
             <div className="surface card-hover flex h-full flex-col justify-between rounded-[20px] p-9" data-testid="about-location-card">
-              <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500">
-                <MapPin className="h-3.5 w-3.5 text-blue-400" /> {PROFILE.location}
-              </div>
-              <div className="mt-8">
-                <div className="flex items-center gap-3 font-display text-3xl font-bold tabular-nums text-slate-100">
-                  <Clock className="h-5 w-5 text-emerald-400" />
-                  {time}
-                </div>
-                <p className="mt-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                    <span className="relative h-2 w-2 rounded-full bg-emerald-400" />
-                  </span>
-                  Local time
+              <div>
+                <MapPin className="h-6 w-6 text-emerald-400" />
+                <p className="mt-6 font-display text-xl font-semibold leading-snug text-slate-100">
+                  {PROFILE.location}
                 </p>
               </div>
+              <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500">
+                Location
+              </p>
             </div>
           </Reveal>
 

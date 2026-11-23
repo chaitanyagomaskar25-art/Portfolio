@@ -127,12 +127,75 @@ function TechIcon({ id, className = "h-4 w-4" }) {
           <path d="M12 18.5v3.5c0 .6-.4 1-.9 1-.4 0-.8-.3-.9-.8L12 18.5z" fill="#34D399" />
         </svg>
       );
+    case "mongoose":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" className={className} aria-label="Mongoose">
+          {/* Mongoose ODM leaping silhouette */}
+          <path
+            d="M21 13.8c-.3-1.1-1.1-2-2.2-2.4.2-.6.1-1.2-.2-1.7-.4-.7-1-1.1-1.8-1.1-.4 0-.8.2-1.2.4-.7-.6-1.7-.9-2.6-.8-1.3.2-2.4 1-2.9 2.2-.6.2-1.2.6-1.6 1.1-.5.7-.7 1.4-.7 2.2.1.5.3 1 .6 1.4-1 .4-1.7 1.2-2 2.2-.4 1-.3 2 .1 3 .5 1 1.4 1.8 2.5 2.2 1.1.4 2.3.4 3.4 0 1.1-.4 2-1 2.5-2 .5-.9.8-2 .7-3.1 0-.3 0-.5-.1-.8.9-.3 1.6-1 2-1.8.5-.8.6-1.8.4-2.7.7.5 1.2 1.3 1.4 2.1.2.9 0 1.8-.5 2.5-.5.7-1.2 1.2-2.1 1.4v1.6c1.3-.3 2.5-1 3.3-2.1.7-1.1 1-2.5.7-3.8z"
+            fill="#880000"
+          />
+          <circle cx="16.2" cy="9.8" r="0.75" fill="#FFFFFF" />
+          <path
+            d="M5 14c.2-1.5 1.4-2.7 2.9-2.9 1.5-.2 3 .5 3.8 1.8"
+            stroke="#EF4444"
+            strokeWidth="1.3"
+            strokeLinecap="round"
+          />
+        </svg>
+      );
+    case "mongodbatlas":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" className={className} aria-label="MongoDB Atlas">
+          {/* Cloud cluster container */}
+          <path
+            d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"
+            fill="#023430"
+            stroke="#00ED64"
+            strokeWidth="1.3"
+            strokeLinejoin="round"
+          />
+          {/* MongoDB leaf inside cloud */}
+          <path d="M12 7.5C11.6 9.8 9.5 12.2 9.5 15c0 1.8 1.1 3 2.5 3.5 1.4-.5 2.5-1.7 2.5-3.5 0-2.8-2.1-5.2-2.5-7.5z" fill="#00ED64" />
+          <path d="M12 7.5V18.5c.2 0 .4-.1.6-.2 1.1-.6 1.9-1.8 1.9-3.3 0-2.8-2.1-5.2-2.5-7.5z" fill="#00684A" />
+          <path d="M12 18v2.2c0 .4-.2.6-.5.6-.2 0-.4-.2-.5-.5L12 18z" fill="#00ED64" />
+        </svg>
+      );
     case "sql":
       return (
         <svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className} aria-label="SQL">
           <ellipse cx="12" cy="5" rx="9" ry="3" fill="#1E3A8A" fillOpacity="0.25" />
           <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
           <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+        </svg>
+      );
+    case "mysql":
+      return (
+        <svg viewBox="0 0 24 24" fill="none" className={className} aria-label="MySQL">
+          {/* Sakila the Dolphin */}
+          <path
+            d="M18.8 6.5c-.8-.9-1.9-1.4-3.1-1.5.3-.8.1-1.7-.3-2.3-.5.3-1 .7-1.4 1.3-1.6-.5-3.4-.3-4.9.4-1.3.6-2.3 1.6-3 2.8-.7 1.2-.9 2.6-.7 4 .2 1.4.9 2.6 1.9 3.5.7.6 1.5 1 2.4 1.2l-.3 1.8c-.1.5.2 1 .7 1.1.5.1 1-.2 1.1-.7l.4-2.1c1.2-.2 2.3-.8 3.1-1.7.8-.9 1.3-2.1 1.4-3.3.1-1.6-.4-3.1-1.2-4.4l.6-.2z"
+            fill="#00758F"
+          />
+          <circle cx="14.8" cy="7" r="0.75" fill="#FFFFFF" />
+          {/* Sakila orange fin splash */}
+          <path
+            d="M8.5 13.5c-.8.8-1.5 1.8-1.8 2.9-.1.4.1.8.5.9.4.1.8-.1.9-.5.3-.9.9-1.7 1.6-2.3l-1.2-1z"
+            fill="#F29111"
+          />
+          {/* Ocean wave ripples */}
+          <path
+            d="M2.5 19.5c2-1 4-1 6 0s4 1 6 0 4-1 6 0"
+            stroke="#00758F"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          />
+          <path
+            d="M5.5 22c1.8-.8 3.5-.8 5.3 0s3.5.8 5.3 0"
+            stroke="#F29111"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+          />
         </svg>
       );
     case "python":
@@ -247,16 +310,19 @@ const SKILL_GROUPS = [
     number: "03",
     title: "Databases",
     titleEm: "Storage",
-    tagline: "Document schemas, relational query optimization & structured data models",
+    tagline: "Document schemas, cloud clusters, ORM/ODMs & relational SQL engines",
     accent: "teal",
     accentColor: "#14B8A6",
-    accentBg: "rgba(20, 184, 166, 0.12)",
-    accentBorder: "border-teal-400/35",
-    glow: "rgba(20, 184, 166, 0.18)",
+    accentBg: "rgba(20, 184, 166, 0.14)",
+    accentBorder: "border-teal-400/40",
+    glow: "rgba(20, 184, 166, 0.22)",
     icon: Database,
     skills: [
       { name: "MongoDB", icon: "mongodb" },
+      { name: "Mongoose", icon: "mongoose" },
       { name: "SQL", icon: "sql" },
+      { name: "MySQL", icon: "mysql" },
+      { name: "MongoDB Atlas", icon: "mongodbatlas", span: 2, badge: "Cloud DB" },
     ],
   },
   {
@@ -336,11 +402,13 @@ function CompactSkillCard({ skill, glow, accentColor }) {
     mouseY.set(0.5);
   };
 
+  const isWide = skill.span === 2;
+
   return (
     <motion.div
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      whileHover={{ y: -3, scale: 1.03 }}
+      whileHover={{ y: -3, scale: 1.025 }}
       whileTap={{ scale: 0.98 }}
       style={{
         rotateX,
@@ -348,11 +416,13 @@ function CompactSkillCard({ skill, glow, accentColor }) {
         transformPerspective: 800,
         transformStyle: "preserve-3d",
       }}
-      className="group relative flex items-center gap-3 rounded-xl border border-white/[0.08] bg-[#0A0E17]/85 p-2.5 sm:px-3 sm:py-2.5 backdrop-blur-md transition-all duration-300 hover:border-white/25 hover:bg-[#0E1524] hover:shadow-[0_10px_25px_-6px_rgba(0,0,0,0.7)] cursor-default select-none overflow-hidden"
+      className={`group relative flex items-center gap-3 rounded-xl border border-white/[0.08] bg-[#0E1524] p-2.5 sm:px-3 sm:py-2.5 backdrop-blur-md transition-all duration-300 hover:border-white/25 hover:shadow-[0_10px_25px_-6px_rgba(0,0,0,0.7)] cursor-default select-none overflow-hidden ${
+        isWide ? "col-span-2" : "col-span-1"
+      }`}
     >
-      {/* Subtle hover glow accent overlay */}
+      {/* Permanent ambient glow accent overlay (active in normal & hover states) */}
       <div
-        className="pointer-events-none absolute inset-0 rounded-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        className="pointer-events-none absolute inset-0 rounded-xl"
         style={{
           background: `radial-gradient(180px circle at 50% 0%, ${glow}, transparent 75%)`,
         }}
@@ -374,11 +444,20 @@ function CompactSkillCard({ skill, glow, accentColor }) {
         </p>
       </div>
 
-      {/* Tiny active accent indicator dot */}
-      <span
-        style={{ backgroundColor: accentColor }}
-        className="h-1 w-1 shrink-0 rounded-full opacity-30 transition-opacity duration-300 group-hover:opacity-100"
-      />
+      {/* Optional badge or indicator dot */}
+      {skill.badge ? (
+        <span
+          style={{ transform: "translateZ(8px)", borderColor: `${accentColor}40`, color: accentColor }}
+          className="shrink-0 rounded-md border bg-white/[0.03] px-2 py-0.5 font-mono text-[9px] font-medium uppercase tracking-wider"
+        >
+          {skill.badge}
+        </span>
+      ) : (
+        <span
+          style={{ backgroundColor: accentColor }}
+          className="h-1 w-1 shrink-0 rounded-full opacity-30 transition-opacity duration-300 group-hover:opacity-100"
+        />
+      )}
     </motion.div>
   );
 }
@@ -394,13 +473,13 @@ function CategoryCard({ category }) {
     >
       {/* Top ambient highlight line */}
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent transition-colors group-hover/card:via-white/35"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent"
         aria-hidden="true"
       />
 
-      {/* Ambient background accent glow */}
+      {/* Permanent ambient background accent glow (active in normal & hover states) */}
       <div
-        className="pointer-events-none absolute -inset-px -z-10 rounded-2xl opacity-0 transition-opacity duration-500 group-hover/card:opacity-100"
+        className="pointer-events-none absolute -inset-px -z-10 rounded-2xl"
         style={{
           background: `radial-gradient(350px circle at 50% 0%, ${category.glow}, transparent 70%)`,
         }}
