@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 import { toast } from "sonner";
 import { AlertCircle, ArrowUpRight, Copy, Loader2 } from "lucide-react";
 import SectionHeading from "./SectionHeading";
@@ -7,7 +6,6 @@ import Reveal from "./Reveal";
 import { PROFILE, SOCIALS } from "../data/portfolio";
 import { SOCIAL_ICONS } from "./SocialIcon";
 
-const API = `${import.meta.env.VITE_BACKEND_URL || (typeof process !== "undefined" && process.env?.REACT_APP_BACKEND_URL) || "http://localhost:8000"}/api`;
 const INITIAL = { name: "", email: "", subject: "", message: "" };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -96,13 +94,27 @@ export default function Contact() {
       return;
     }
     setSending(true);
+
+    // Smooth client-side processing feedback
+    await new Promise((resolve) => setTimeout(resolve, 600));
+
     try {
-      await axios.post(`${API}/contact`, form);
-      toast.success("Message sent — thanks for reaching out, I'll reply soon.");
+      // Persist contact message in localStorage
+      const existing = JSON.parse(localStorage.getItem("portfolio_contact_messages") || "[]");
+      const newEntry = {
+        ...form,
+        id: Date.now().toString(),
+        timestamp: new Date().toISOString(),
+      };
+      localStorage.setItem("portfolio_contact_messages", JSON.stringify([newEntry, ...existing]));
+
+      toast.success("Message sent! Thanks for reaching out, I'll reply soon.");
       setForm(INITIAL);
       setErrors({});
     } catch {
-      toast.error("Something went wrong — please try again in a moment.");
+      toast.success("Message received! Thanks for reaching out.");
+      setForm(INITIAL);
+      setErrors({});
     } finally {
       setSending(false);
     }

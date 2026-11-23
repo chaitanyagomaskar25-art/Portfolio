@@ -45,7 +45,7 @@ export default function Footer() {
           <p data-testid="footer-copyright">
             © {new Date().getFullYear()} {PROFILE.name} · Sample portfolio with placeholder content
           </p>
-          <p>Built with React, Tailwind CSS & FastAPI</p>
+          <p>Built with React & Tailwind CSS</p>
         </div>
       </div>
     </footer>
