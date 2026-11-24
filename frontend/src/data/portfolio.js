@@ -10,7 +10,7 @@ export const PROFILE = {
   location: "Gadchiroli, MH, India - 442605",
   timezone: "UTC",
   email: "chaitanyagomaskar25@navgurukul.org",
-  resume: "/Chaitanya_Gomaskar_FSDI_Resume.pdf",
+  resume: "https://drive.google.com/file/d/145xNp0vnIFFa-L9jKzIDXZC16hn9maWa/view?usp=sharing",
   intro:
     "I build complete, working products — responsive, animated interfaces on the front, dependable APIs and data on the back.",
   about: [

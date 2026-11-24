@@ -183,7 +183,8 @@ export default function Hero() {
                 whileTap={{ scale: 0.95 }}
                 data-testid="hero-resume-button"
                 href={PROFILE.resume}
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 className="group inline-flex items-center gap-2 px-3 py-3.5 font-mono text-xs uppercase tracking-[0.2em] text-slate-400 transition-colors duration-300 hover:text-emerald-300"
               >
                 <Download className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5" />

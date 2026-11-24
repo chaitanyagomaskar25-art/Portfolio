@@ -177,7 +177,8 @@ export default function Navbar() {
             <a
               data-testid="nav-resume-button"
               href={PROFILE.resume}
-              download
+              target="_blank"
+              rel="noopener noreferrer"
               className="hidden items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/[0.08] px-4 py-2 font-display text-xs font-semibold text-emerald-300 transition-all duration-200 hover:bg-emerald-400/15 hover:shadow-[0_0_24px_-4px_rgba(16,185,129,0.45)] sm:inline-flex active:scale-95"
             >
               <Download className="h-3.5 w-3.5" /> Resume
@@ -288,7 +289,8 @@ export default function Navbar() {
               <a
                 data-testid="nav-mobile-resume-button"
                 href={PROFILE.resume}
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setOpen(false)}
                 className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-emerald-400/40 bg-gradient-to-r from-emerald-500 to-teal-500 py-3.5 font-display text-sm font-bold text-[#04110B] shadow-[0_8px_25px_-4px_rgba(16,185,129,0.45)] transition-all active:scale-[0.98]"
               >
