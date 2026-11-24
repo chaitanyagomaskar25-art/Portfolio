@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useRef, useState } from "react";
+import { AnimatePresence, motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from "framer-motion";
 import {
   Code2,
   Cpu,
@@ -50,7 +50,7 @@ function TechIcon({ id, className = "h-4 w-4" }) {
     case "reactnative":
       return (
         <svg viewBox="0 0 24 24" fill="none" className={className} aria-label="React Native">
-          <rect x="5" y="2" width="14" height="20" rx="3" stroke="#61DAFB" strokeWidth="1.5" fill="#070D18" />
+          <rect x="5" y="2" width="14" height="20" rx="3" stroke="#61DAFB" strokeWidth="1.5" className="fill-[#070D18] light-rn-bg" />
           <circle cx="12" cy="11.5" r="1.4" fill="#61DAFB" />
           <ellipse cx="12" cy="11.5" rx="4.8" ry="1.8" stroke="#61DAFB" strokeWidth="1.1" transform="rotate(45 12 11.5)" />
           <ellipse cx="12" cy="11.5" rx="4.8" ry="1.8" stroke="#61DAFB" strokeWidth="1.1" transform="rotate(-45 12 11.5)" />
@@ -83,7 +83,7 @@ function TechIcon({ id, className = "h-4 w-4" }) {
       );
     case "express":
       return (
-        <svg viewBox="0 0 24 24" fill="#F1F5F9" className={className} aria-label="Express.js">
+        <svg viewBox="0 0 24 24" className={`${className} fill-slate-100 text-slate-100 light-icon-express`} aria-label="Express.js">
           <path d="M14.7 6.4c-1.4 0-2.4.7-3.1 1.7-.6-1-1.7-1.7-3.1-1.7-2.1 0-3.8 1.7-3.8 4s1.7 4 3.8 4c1.4 0 2.5-.7 3.1-1.7.6 1 1.7 1.7 3.1 1.7 2.1 0 3.8-1.7 3.8-4s-1.7-4-3.8-4zm-6.2 6.2c-1.2 0-2-.9-2-2.2s.8-2.2 2-2.2 2 .9 2 2.2-.8 2.2-2 2.2zm6.2 0c-1.2 0-2-.9-2-2.2s.8-2.2 2-2.2 2 .9 2 2.2-.8 2.2-2 2.2zM21 7l-2.5 3.5L21 14h-2l-1.5-2.2-1.5 2.2h-2l2.5-3.5L14 7h2l1.5 2.2L19 7h2z" />
         </svg>
       );
@@ -107,7 +107,7 @@ function TechIcon({ id, className = "h-4 w-4" }) {
     case "socketio":
       return (
         <svg viewBox="0 0 24 24" fill="none" className={className} aria-label="Socket.IO">
-          <circle cx="12" cy="12" r="10" stroke="#F59E0B" strokeWidth="1.5" fill="#1C1917" />
+          <circle cx="12" cy="12" r="10" stroke="#F59E0B" strokeWidth="1.5" className="fill-[#1C1917] light-socket-bg" />
           <path d="M13.5 6L8 13.5h4L10.5 18 16 10.5h-4L13.5 6z" fill="#F59E0B" />
         </svg>
       );
@@ -238,13 +238,13 @@ function TechIcon({ id, className = "h-4 w-4" }) {
       );
     case "github":
       return (
-        <svg viewBox="0 0 24 24" fill="#F1F5F9" className={className} aria-label="GitHub">
+        <svg viewBox="0 0 24 24" className={`${className} fill-slate-100 text-slate-100 light-icon-github`} aria-label="GitHub">
           <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
         </svg>
       );
     case "vercel":
       return (
-        <svg viewBox="0 0 24 24" fill="#FFFFFF" className={className} aria-label="Vercel">
+        <svg viewBox="0 0 24 24" className={`${className} fill-slate-100 text-slate-100 light-icon-vercel`} aria-label="Vercel">
           <path d="M12 1L24 22H0L12 1Z" />
         </svg>
       );
@@ -381,8 +381,9 @@ const SKILL_GROUPS = [
   },
 ];
 
-// Interactive Skill Card with Subtle 3D Tilt
+// Interactive Skill Card with Subtle 3D Tilt and Cursor-Following Spotlight Highlight
 function CompactSkillCard({ skill, glow, accentColor }) {
+  const cardRef = useRef(null);
   const mouseX = useMotionValue(0.5);
   const mouseY = useMotionValue(0.5);
 
@@ -390,8 +391,15 @@ function CompactSkillCard({ skill, glow, accentColor }) {
   const rotateX = useSpring(useTransform(mouseY, [0, 1], [6, -6]), springConfig);
   const rotateY = useSpring(useTransform(mouseX, [0, 1], [-6, 6]), springConfig);
 
+  const glareBg = useMotionTemplate`radial-gradient(180px circle at ${useTransform(
+    mouseX,
+    [0, 1],
+    [0, 100]
+  )}% ${useTransform(mouseY, [0, 1], [0, 100])}%, ${glow}, transparent 75%)`;
+
   const handleMouseMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
     if (!rect.width || !rect.height) return;
     mouseX.set((e.clientX - rect.left) / rect.width);
     mouseY.set((e.clientY - rect.top) / rect.height);
@@ -406,6 +414,7 @@ function CompactSkillCard({ skill, glow, accentColor }) {
 
   return (
     <motion.div
+      ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       whileHover={{ y: -3, scale: 1.025 }}
@@ -416,15 +425,15 @@ function CompactSkillCard({ skill, glow, accentColor }) {
         transformPerspective: 800,
         transformStyle: "preserve-3d",
       }}
-      className={`group relative flex items-center gap-3 rounded-xl border border-white/[0.08] bg-[#0E1524] p-2.5 sm:px-3 sm:py-2.5 backdrop-blur-md transition-all duration-300 hover:border-white/25 hover:shadow-[0_10px_25px_-6px_rgba(0,0,0,0.7)] cursor-default select-none overflow-hidden ${
+      className={`group skill-item-card relative flex items-center gap-3 rounded-xl border border-white/[0.08] bg-[#0E1524] p-2.5 sm:px-3 sm:py-2.5 backdrop-blur-md transition-all duration-300 hover:border-white/25 hover:shadow-[0_10px_25px_-6px_rgba(0,0,0,0.7)] cursor-default select-none overflow-hidden ${
         isWide ? "col-span-2" : "col-span-1"
       }`}
     >
-      {/* Permanent ambient glow accent overlay (active in normal & hover states) */}
-      <div
-        className="pointer-events-none absolute inset-0 rounded-xl"
+      {/* Cursor-Following dynamic highlight matching Beyond the Code */}
+      <motion.div
+        className="skill-card-glow pointer-events-none absolute inset-0 rounded-xl opacity-60 transition-opacity duration-300 group-hover:opacity-100"
         style={{
-          background: `radial-gradient(180px circle at 50% 0%, ${glow}, transparent 75%)`,
+          background: glareBg,
         }}
         aria-hidden="true"
       />
@@ -432,14 +441,14 @@ function CompactSkillCard({ skill, glow, accentColor }) {
       {/* Brand Logo Container with 3D Z-Lift */}
       <div
         style={{ transform: "translateZ(14px)" }}
-        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/[0.07] bg-white/[0.03] p-1 shadow-sm transition-transform duration-300 group-hover:scale-110"
+        className="skill-icon-badge flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-white/[0.07] bg-white/[0.03] p-1 shadow-sm transition-transform duration-300 group-hover:scale-110"
       >
         <TechIcon id={skill.icon} className="h-4 w-4" />
       </div>
 
       {/* Technology Name */}
       <div style={{ transform: "translateZ(10px)" }} className="min-w-0 flex-1">
-        <p className="truncate font-display text-xs sm:text-[13px] font-semibold text-slate-200 transition-colors duration-200 group-hover:text-white">
+        <p className="skill-name-text truncate font-display text-xs sm:text-[13px] font-semibold text-slate-200 transition-colors duration-200 group-hover:text-white">
           {skill.name}
         </p>
       </div>
@@ -448,7 +457,7 @@ function CompactSkillCard({ skill, glow, accentColor }) {
       {skill.badge ? (
         <span
           style={{ transform: "translateZ(8px)", borderColor: `${accentColor}40`, color: accentColor }}
-          className="shrink-0 rounded-md border bg-white/[0.03] px-2 py-0.5 font-mono text-[9px] font-medium uppercase tracking-wider"
+          className="skill-badge-pill shrink-0 rounded-md border bg-white/[0.03] px-2 py-0.5 font-mono text-[9px] font-medium uppercase tracking-wider"
         >
           {skill.badge}
         </span>
@@ -464,12 +473,38 @@ function CompactSkillCard({ skill, glow, accentColor }) {
 
 // Category Section Card with Ambient Header and Grid
 function CategoryCard({ category }) {
+  const cardRef = useRef(null);
   const Icon = category.icon;
+
+  const mouseX = useMotionValue(0.5);
+  const mouseY = useMotionValue(0.5);
+
+  const glareBg = useMotionTemplate`radial-gradient(380px circle at ${useTransform(
+    mouseX,
+    [0, 1],
+    [0, 100]
+  )}% ${useTransform(mouseY, [0, 1], [0, 100])}%, ${category.glow}, transparent 70%)`;
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    mouseX.set((e.clientX - rect.left) / rect.width);
+    mouseY.set((e.clientY - rect.top) / rect.height);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0.5);
+    mouseY.set(0.5);
+  };
 
   return (
     <article
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       data-testid={`skill-category-${category.id}`}
-      className="group/card relative flex h-full flex-col justify-between rounded-2xl border border-white/[0.08] bg-[#070B12]/85 p-5 sm:p-6 backdrop-blur-md transition-all duration-300 hover:border-white/20 hover:shadow-[0_20px_45px_-12px_rgba(0,0,0,0.85)]"
+      className="group/card skill-category-card relative flex h-full flex-col justify-between rounded-2xl border border-white/[0.08] bg-[#070B12]/85 p-5 sm:p-6 backdrop-blur-md transition-all duration-300 hover:border-white/20 hover:shadow-[0_20px_45px_-12px_rgba(0,0,0,0.85)]"
     >
       {/* Top ambient highlight line */}
       <div
@@ -477,11 +512,11 @@ function CategoryCard({ category }) {
         aria-hidden="true"
       />
 
-      {/* Permanent ambient background accent glow (active in normal & hover states) */}
-      <div
-        className="pointer-events-none absolute -inset-px -z-10 rounded-2xl"
+      {/* Dynamic Cursor-Following ambient background accent glow */}
+      <motion.div
+        className="skill-category-glow pointer-events-none absolute -inset-px -z-10 rounded-2xl opacity-60 transition-opacity duration-300 group-hover/card:opacity-100"
         style={{
-          background: `radial-gradient(350px circle at 50% 0%, ${category.glow}, transparent 70%)`,
+          background: glareBg,
         }}
         aria-hidden="true"
       />
@@ -491,7 +526,7 @@ function CategoryCard({ category }) {
         <div className="flex items-start justify-between gap-3 border-b border-white/[0.06] pb-4">
           <div className="flex items-center gap-3">
             <div
-              className={`flex h-9 w-9 items-center justify-center rounded-xl border ${category.accentBorder}`}
+              className={`skill-icon-box flex h-9 w-9 items-center justify-center rounded-xl border ${category.accentBorder} category-icon-box-${category.accent}`}
               style={{ backgroundColor: category.accentBg, color: category.accentColor }}
             >
               <Icon className="h-4 w-4" />
@@ -499,18 +534,18 @@ function CategoryCard({ category }) {
 
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-mono text-[10px] font-bold text-slate-500">
+                <span className="skill-category-num font-mono text-[10px] font-bold text-slate-500">
                   {category.number}
                 </span>
-                <span className="h-1 w-1 rounded-full bg-white/20" />
+                <span className="skill-category-dot h-1 w-1 rounded-full bg-white/20" />
                 <span
                   style={{ color: category.accentColor }}
-                  className="font-mono text-[10px] uppercase tracking-[0.2em] font-semibold"
+                  className={`font-mono text-[10px] uppercase tracking-[0.2em] font-semibold category-accent-${category.accent}`}
                 >
                   Domain
                 </span>
               </div>
-              <h3 className="mt-0.5 font-display text-lg sm:text-[19px] font-bold tracking-tight text-slate-100">
+              <h3 className="skill-category-title mt-0.5 font-display text-lg sm:text-[19px] font-bold tracking-tight text-slate-100">
                 {category.title}{" "}
                 <em className="text-gradient pr-1 font-serif font-normal italic text-sm">
                   {category.titleEm}
@@ -520,13 +555,13 @@ function CategoryCard({ category }) {
           </div>
 
           {/* Technology count pill */}
-          <span className="shrink-0 rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-slate-400">
+          <span className="skill-tool-count-pill shrink-0 rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-slate-400">
             {category.skills.length} tools
           </span>
         </div>
 
         {/* Tagline */}
-        <p className="mt-3 text-xs leading-relaxed text-slate-400">
+        <p className="skill-category-tagline mt-3 text-xs leading-relaxed text-slate-400">
           {category.tagline}
         </p>
 
@@ -550,13 +585,13 @@ export default function Skills() {
   const [activeTab, setActiveTab] = useState("all");
 
   const filterTabs = [
-    { id: "all", label: "All Skills" },
-    { id: "frontend", label: "Frontend" },
-    { id: "backend", label: "Backend" },
-    { id: "databases", label: "Databases" },
-    { id: "languages", label: "Languages" },
-    { id: "ai", label: "Data & AI" },
-    { id: "tools", label: "Tools" },
+    { id: "all", label: "All Skills", count: 24 },
+    { id: "frontend", label: "Frontend", count: 8 },
+    { id: "backend", label: "Backend", count: 6 },
+    { id: "databases", label: "Databases", count: 5 },
+    { id: "languages", label: "Languages", count: 2 },
+    { id: "ai", label: "Data & AI", count: 3 },
+    { id: "tools", label: "Tools", count: 4 },
   ];
 
   const visibleGroups = SKILL_GROUPS.filter((g) => {
@@ -575,7 +610,7 @@ export default function Skills() {
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         {/* Section Header */}
-        <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+        <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
           <Reveal>
             <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em] text-emerald-400">
               <span className="h-px w-8 bg-gradient-to-r from-emerald-400 to-blue-400" aria-hidden="true" />
@@ -587,31 +622,50 @@ export default function Skills() {
             </p>
           </Reveal>
 
-          {/* Interactive Category Filter Tabs */}
-          <Reveal delay={0.08}>
-            <div className="flex flex-wrap gap-1 rounded-full border border-white/10 bg-white/[0.02] p-1 backdrop-blur-md">
-              {filterTabs.map((tab) => {
-                const isActive = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    data-testid={`skill-filter-${tab.id}`}
-                    className={`relative rounded-full px-3 py-1 font-mono text-xs uppercase tracking-wider transition-colors duration-200 ${
-                      isActive ? "text-emerald-300 font-semibold" : "text-slate-400 hover:text-slate-200"
-                    }`}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeSkillTab"
-                        transition={{ type: "spring", stiffness: 380, damping: 28 }}
-                        className="absolute inset-0 rounded-full border border-emerald-400/40 bg-emerald-400/15 shadow-[0_0_15px_rgba(16,185,129,0.25)]"
-                      />
-                    )}
-                    <span className="relative z-10">{tab.label}</span>
-                  </button>
-                );
-              })}
+          {/* Interactive Category Filter Tabs - Fully Responsive Scroll Container */}
+          <Reveal delay={0.08} className="w-full lg:w-auto">
+            <div className="skill-filter-outer relative -mx-5 px-5 sm:mx-0 sm:px-0">
+              <div
+                className="skill-filter-wrapper flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth rounded-2xl sm:rounded-full border border-white/[0.08] bg-[#0A0F1A]/85 p-1.5 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl max-w-full"
+                role="tablist"
+                aria-label="Skill category filters"
+              >
+                {filterTabs.map((tab) => {
+                  const isActive = activeTab === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id)}
+                      role="tab"
+                      aria-selected={isActive}
+                      data-testid={`skill-filter-${tab.id}`}
+                      className={`skill-filter-btn relative flex shrink-0 items-center gap-2 rounded-xl sm:rounded-full px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider transition-all duration-200 select-none ${
+                        isActive
+                          ? "text-emerald-300 font-bold skill-active-tab"
+                          : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]"
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeSkillTab"
+                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                          className="skill-active-tab-indicator absolute inset-0 rounded-xl sm:rounded-full border border-emerald-400/50 bg-gradient-to-r from-emerald-500/20 via-emerald-400/15 to-teal-500/20 shadow-[0_0_18px_rgba(16,185,129,0.3),inset_0_1px_0_rgba(255,255,255,0.15)]"
+                        />
+                      )}
+                      <span className="relative z-10">{tab.label}</span>
+                      <span
+                        className={`relative z-10 flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 font-mono text-[9.5px] font-semibold transition-colors ${
+                          isActive
+                            ? "bg-emerald-400/25 text-emerald-200 border border-emerald-400/40"
+                            : "bg-white/[0.05] text-slate-400 border border-white/[0.06]"
+                        }`}
+                      >
+                        {tab.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </Reveal>
         </div>

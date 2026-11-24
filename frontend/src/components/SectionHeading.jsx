@@ -4,7 +4,7 @@ export function EmTitle({ text, className = "" }) {
   const parts = text.split("*");
   return (
     <h2
-      className={`mt-6 max-w-3xl font-display text-4xl font-bold leading-[1.05] tracking-[-0.02em] text-slate-50 sm:text-5xl lg:text-6xl ${className}`}
+      className={`mt-4 sm:mt-6 max-w-3xl font-display text-3xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] sm:leading-[1.05] tracking-[-0.02em] text-slate-50 break-words ${className}`}
     >
       {parts.map((part, i) =>
         i % 2 === 1 ? (

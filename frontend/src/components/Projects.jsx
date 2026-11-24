@@ -9,8 +9,14 @@ import {
   useTransform,
 } from "framer-motion";
 import {
+  ArrowLeft,
+  ArrowRight,
   ArrowUpRight,
   Check,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
   Code2,
   Cpu,
   ExternalLink,
@@ -22,7 +28,7 @@ import { PROJECTS } from "../data/portfolio";
 import { GitHubIcon } from "./SocialIcon";
 import Reveal from "./Reveal";
 import { EmTitle } from "./SectionHeading";
-import { startScroll, stopScroll } from "../lib/scroll";
+import { scrollToId, startScroll, stopScroll } from "../lib/scroll";
 
 // Vector SVG Logos for Project Technology Badges
 function ProjectTechIcon({ name, className = "h-3 w-3" }) {
@@ -683,6 +689,36 @@ export default function Projects() {
   const [activeProject, setActiveProject] = useState(null);
   const [filter, setFilter] = useState("all");
   const [isTouchDevice, setIsTouchDevice] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState(1); // 1 = next, -1 = prev
+
+  // Responsive items-per-page calculation:
+  // Large desktop (>= 1024px): 3 project cards
+  // Tablet (>= 768px): 2 project cards
+  // Mobile (< 768px): 1 project card
+  const getItemsPerPage = () => {
+    if (typeof window === "undefined") return 3;
+    if (window.innerWidth >= 1024) return 3;
+    if (window.innerWidth >= 768) return 2;
+    return 1;
+  };
+
+  const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const nextItems = getItemsPerPage();
+      setItemsPerPage(nextItems);
+      // Ensure currentIndex remains valid within new page count
+      setCurrentIndex((prev) => {
+        const total = filteredProjects.length;
+        const totalP = Math.max(1, Math.ceil(total / nextItems));
+        return Math.min(prev, totalP - 1);
+      });
+    };
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Detect touch / coarse pointer devices for static tilted appearance
   useEffect(() => {
@@ -701,7 +737,7 @@ export default function Projects() {
     }
   }, []);
 
-  // Professional project category filters as requested
+  // Professional project category filters with counts
   const categories = [
     { id: "all", label: "All Projects" },
     { id: "fullstack", label: "Full Stack" },
@@ -715,6 +751,66 @@ export default function Projects() {
     if (filter === "all") return true;
     return p.filterCategories?.includes(filter);
   });
+
+  const totalPages = Math.max(1, Math.ceil(filteredProjects.length / itemsPerPage));
+
+  // Reset to first page when filter changes
+  const handleFilterChange = (catId) => {
+    setFilter(catId);
+    setCurrentIndex(0);
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setDirection(-1);
+      setCurrentIndex((prev) => prev - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentIndex < totalPages - 1) {
+      setDirection(1);
+      setCurrentIndex((prev) => prev + 1);
+    }
+  };
+
+  const handlePageSelect = (pageIndex) => {
+    if (pageIndex !== currentIndex) {
+      setDirection(pageIndex > currentIndex ? 1 : -1);
+      setCurrentIndex(pageIndex);
+    }
+  };
+
+  const startIndex = currentIndex * itemsPerPage;
+  const currentProjects = filteredProjects.slice(startIndex, startIndex + itemsPerPage);
+
+  const slideVariants = {
+    enter: (dir) => ({
+      x: dir > 0 ? 80 : -80,
+      opacity: 0,
+      scale: 0.98,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      transition: {
+        x: { type: "spring", stiffness: 300, damping: 30 },
+        opacity: { duration: 0.28 },
+        scale: { duration: 0.28 },
+      },
+    },
+    exit: (dir) => ({
+      x: dir > 0 ? -80 : 80,
+      opacity: 0,
+      scale: 0.98,
+      transition: {
+        x: { type: "spring", stiffness: 300, damping: 30 },
+        opacity: { duration: 0.22 },
+        scale: { duration: 0.22 },
+      },
+    }),
+  };
 
   return (
     <section
@@ -731,7 +827,7 @@ export default function Projects() {
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
         {/* Clean, Modern Section Header */}
-        <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+        <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
           <Reveal>
             <p className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em] text-emerald-400">
               <span className="h-px w-8 bg-gradient-to-r from-emerald-400 to-blue-400" aria-hidden="true" />
@@ -743,57 +839,155 @@ export default function Projects() {
             </p>
           </Reveal>
 
-          {/* Modern Pill Filter Tabs */}
-          <Reveal delay={0.08}>
-            <div className="flex flex-wrap gap-1 rounded-full border border-white/10 bg-white/[0.02] p-1 backdrop-blur-md">
-              {categories.map((cat) => {
-                const isActive = filter === cat.id;
+          {/* Modern Pill Filter Tabs & Navigation Arrows Header Controls - Fully Responsive */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 w-full lg:w-auto">
+            <Reveal delay={0.08} className="w-full sm:w-auto">
+              <div className="project-filter-outer relative -mx-5 px-5 sm:mx-0 sm:px-0">
+                <div
+                  className="project-filter-wrapper flex items-center gap-1.5 overflow-x-auto no-scrollbar scroll-smooth rounded-2xl sm:rounded-full border border-white/[0.08] bg-[#0A0F1A]/85 p-1.5 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl max-w-full"
+                  role="tablist"
+                  aria-label="Project category filters"
+                >
+                  {categories.map((cat) => {
+                    const isActive = filter === cat.id;
+                    const catCount =
+                      cat.id === "all"
+                        ? PROJECTS.length
+                        : PROJECTS.filter((p) => p.filterCategories?.includes(cat.id)).length;
+
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => handleFilterChange(cat.id)}
+                        role="tab"
+                        aria-selected={isActive}
+                        data-testid={`project-filter-${cat.id}`}
+                        className={`project-filter-btn relative flex shrink-0 items-center gap-2 rounded-xl sm:rounded-full px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider transition-all duration-200 select-none ${
+                          isActive
+                            ? "text-emerald-300 font-bold project-active-tab"
+                            : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]"
+                        }`}
+                      >
+                        {isActive && (
+                          <motion.div
+                            layoutId="activeFilterPill"
+                            transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                            className="project-active-tab-indicator absolute inset-0 rounded-xl sm:rounded-full border border-emerald-400/50 bg-gradient-to-r from-emerald-500/20 via-emerald-400/15 to-teal-500/20 shadow-[0_0_18px_rgba(16,185,129,0.3),inset_0_1px_0_rgba(255,255,255,0.15)]"
+                          />
+                        )}
+                        <span className="relative z-10">{cat.label}</span>
+                        <span
+                          className={`relative z-10 flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 font-mono text-[9.5px] font-semibold transition-colors ${
+                            isActive
+                              ? "bg-emerald-400/25 text-emerald-200 border border-emerald-400/40"
+                              : "bg-white/[0.05] text-slate-400 border border-white/[0.06]"
+                          }`}
+                        >
+                          {catCount}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Navigation Arrow Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-end gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  disabled={currentIndex === 0}
+                  aria-label="Previous projects"
+                  data-testid="projects-prev-desktop"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-[#0A0F1A]/85 text-slate-300 shadow-sm backdrop-blur-xl transition-all duration-200 hover:border-emerald-400/50 hover:bg-emerald-400/15 hover:text-white disabled:cursor-not-allowed disabled:opacity-25 disabled:hover:border-white/15 disabled:hover:bg-[#0A0F1A]/85 disabled:hover:text-slate-300 active:scale-95"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+
+                <div className="flex items-center gap-1 px-1 font-mono text-xs text-slate-400 select-none">
+                  <span className="font-semibold text-emerald-400">{currentIndex + 1}</span>
+                  <span className="opacity-40">/</span>
+                  <span>{totalPages}</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  disabled={currentIndex === totalPages - 1}
+                  aria-label="Next projects"
+                  data-testid="projects-next-desktop"
+                  className="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-[#0A0F1A]/85 text-slate-300 shadow-sm backdrop-blur-xl transition-all duration-200 hover:border-emerald-400/50 hover:bg-emerald-400/15 hover:text-white disabled:cursor-not-allowed disabled:opacity-25 disabled:hover:border-white/15 disabled:hover:bg-[#0A0F1A]/85 disabled:hover:text-slate-300 active:scale-95"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Responsive Interactive Project Carousel Container */}
+        <div className="relative mt-12 overflow-hidden min-h-[580px]">
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={`${filter}-${currentIndex}`}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7"
+            >
+              {currentProjects.map((project) => (
+                <div key={project.id} className="h-full">
+                  <Modern3DTiltedCard
+                    project={project}
+                    onOpenDetails={setActiveProject}
+                    isTouchDevice={isTouchDevice}
+                  />
+                </div>
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Carousel Pagination Indicators & Progress Counter */}
+        {totalPages > 1 && (
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* Group info counter */}
+            <div className="font-mono text-xs text-slate-400">
+              Showing{" "}
+              <span className="font-semibold text-emerald-400">
+                {startIndex + 1}–{Math.min(startIndex + itemsPerPage, filteredProjects.length)}
+              </span>{" "}
+              of <span className="font-semibold text-slate-200">{filteredProjects.length}</span> projects
+            </div>
+
+            {/* Pagination Bullet Indicators */}
+            <div className="flex items-center gap-2" role="tablist" aria-label="Project groups">
+              {Array.from({ length: totalPages }).map((_, idx) => {
+                const isActive = idx === currentIndex;
                 return (
                   <button
-                    key={cat.id}
-                    onClick={() => setFilter(cat.id)}
-                    data-testid={`project-filter-${cat.id}`}
-                    className={`relative rounded-full px-3.5 py-1 font-mono text-xs uppercase tracking-wider transition-colors duration-200 ${
-                      isActive ? "text-emerald-300 font-semibold" : "text-slate-400 hover:text-slate-200"
+                    key={idx}
+                    type="button"
+                    onClick={() => handlePageSelect(idx)}
+                    role="tab"
+                    aria-selected={isActive}
+                    aria-label={`Go to project group ${idx + 1}`}
+                    data-testid={`projects-page-indicator-${idx}`}
+                    className={`relative h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+                      isActive
+                        ? "w-8 bg-gradient-to-r from-emerald-400 to-teal-400 shadow-[0_0_12px_rgba(16,185,129,0.5)]"
+                        : "w-2.5 bg-white/20 hover:bg-white/40"
                     }`}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeFilterPill"
-                        transition={{ type: "spring", stiffness: 380, damping: 28 }}
-                        className="absolute inset-0 rounded-full border border-emerald-400/40 bg-emerald-400/15 shadow-[0_0_15px_rgba(16,185,129,0.25)]"
-                      />
-                    )}
-                    <span className="relative z-10">{cat.label}</span>
-                  </button>
+                  />
                 );
               })}
             </div>
-          </Reveal>
-        </div>
-
-        {/* Responsive 3-Column Grid on Desktop, 2 on Tablet, 1 on Mobile */}
-        <motion.div layout className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
-          <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                layout
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.96 }}
-                transition={{ duration: 0.35, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
-                className="h-full"
-              >
-                <Modern3DTiltedCard
-                  project={project}
-                  onOpenDetails={setActiveProject}
-                  isTouchDevice={isTouchDevice}
-                />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+          </div>
+        )}
       </div>
 
       {/* Project Details Modal */}

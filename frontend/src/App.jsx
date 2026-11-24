@@ -9,6 +9,7 @@ import Skills from "./components/Skills";
 import Experience from "./components/Experience";
 import Education from "./components/Education";
 import Achievements from "./components/Achievements";
+import CodingProfiles from "./components/CodingProfiles";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import FloatingBackToTop from "./components/FloatingBackToTop";
@@ -51,7 +52,7 @@ function Portfolio() {
   }, []);
 
   return (
-    <div id="top" className="relative min-h-screen bg-[#05070C] text-slate-100 selection:bg-emerald-500/30">
+    <div id="top" className="relative min-h-screen bg-[#06080D] text-[#ECEFF4] selection:bg-amber-500/30">
       <GlobalBackground />
       <div className="noise-overlay" aria-hidden="true" />
       <Navbar />
@@ -61,6 +62,7 @@ function Portfolio() {
         <About />
         <Projects />
         <Skills />
+        <CodingProfiles />
         <Experience />
         <Education />
         <Achievements />

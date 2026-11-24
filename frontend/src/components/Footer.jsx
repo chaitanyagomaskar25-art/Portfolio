@@ -36,14 +36,14 @@ export default function Footer() {
 
         <div
           aria-hidden="true"
-          className="pointer-events-none mt-16 select-none whitespace-nowrap text-center font-display text-[6.5vw] font-extrabold leading-[0.85] tracking-[-0.02em] text-stroke transition-colors duration-700"
+          className="pointer-events-none mt-16 select-none whitespace-nowrap text-center font-display text-[6.5vw] font-extrabold leading-[0.85] tracking-[-0.02em] text-stroke transition-colors duration-700 max-w-full overflow-hidden"
         >
           {PROFILE.name.toUpperCase()}
         </div>
 
         <div className="flex flex-col items-center justify-between gap-3 border-t border-white/5 py-9 font-mono text-[11px] text-slate-600 sm:flex-row">
           <p data-testid="footer-copyright">
-            © {new Date().getFullYear()} {PROFILE.name} · Sample portfolio with placeholder content
+            © {new Date().getFullYear()} {PROFILE.name} · All rights reserved
           </p>
           <p>Built with React & Tailwind CSS</p>
         </div>

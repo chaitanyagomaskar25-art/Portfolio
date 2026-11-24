@@ -137,15 +137,15 @@ export default function Contact() {
                 about an idea — I'm happy to hear what you're working on.
               </p>
 
-              <div className="surface flex items-center justify-between gap-4 rounded-[20px] p-7" data-testid="contact-email-card">
-                <div>
+              <div className="surface flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-[20px] p-5 sm:p-7" data-testid="contact-email-card">
+                <div className="min-w-0 max-w-full">
                   <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-slate-500">Email</p>
-                  <p className="mt-2 font-mono text-sm text-slate-200">{PROFILE.email}</p>
+                  <p className="mt-2 font-mono text-xs sm:text-sm text-slate-200 break-all select-all">{PROFILE.email}</p>
                 </div>
                 <button
                   data-testid="contact-copy-email-button"
                   onClick={copyEmail}
-                  className="rounded-full border border-white/10 p-3.5 text-slate-300 transition-all duration-300 hover:border-emerald-400/50 hover:text-emerald-300"
+                  className="rounded-full border border-white/10 p-3 text-slate-300 transition-all duration-300 hover:border-emerald-400/50 hover:text-emerald-300 shrink-0 self-end sm:self-auto"
                   aria-label="Copy email address"
                 >
                   <Copy className="h-4 w-4" />
@@ -162,9 +162,10 @@ export default function Contact() {
                         key={s.name}
                         data-testid={`social-${s.name.toLowerCase().replace(/[^a-z]+/g, "-")}-link`}
                         href={s.href}
-                        onClick={(e) => e.preventDefault()}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         aria-label={s.name}
-                        title={`${s.name} — add your real link`}
+                        title={`Open ${s.name} Profile`}
                         className="rounded-full border border-white/10 bg-white/[0.03] p-4 text-slate-300 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/50 hover:text-emerald-300 hover:shadow-[0_0_28px_-8px_rgba(16,185,129,0.5)]"
                       >
                         <Icon className="h-5 w-5" />
@@ -191,7 +192,7 @@ export default function Contact() {
               onSubmit={submit}
               noValidate
               data-testid="contact-form"
-              className="glass rounded-[20px] p-9 sm:p-12"
+              className="glass rounded-[20px] p-6 sm:p-9 lg:p-12"
             >
               <div className="grid gap-6 sm:grid-cols-2">
                 <Field label="Name" error={errors.name}>

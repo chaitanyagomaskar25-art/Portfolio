@@ -609,7 +609,7 @@ const careCircle = createSvg(`
       <rect x="0" y="0" width="410" height="55" rx="8" fill="#ffffff" fill-opacity="0.03" stroke="#38BDF8" stroke-opacity="0.3"/>
       <circle cx="25" cy="28" r="6" fill="#38BDF8"/>
       <text x="45" y="26" fill="#F8FAFC" font-family="system-ui, sans-serif" font-size="12" font-weight="600">Elderly Grocery Delivery · Sector 4</text>
-      <text x="45" y="44" fill="#94A3B8" font-family="system-ui, sans-serif" font-size="11">Matched with volunteer John D.</text>
+      <text x="45" y="44" fill="#94A3B8" font-family="system-ui, sans-serif" font-size="11">Matched with volunteer Chaitanya Gomaskar</text>
     </g>
 
     <g transform="translate(25, 185)">

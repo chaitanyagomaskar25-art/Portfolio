@@ -1,11 +1,41 @@
+import { useRef } from "react";
 import { Briefcase, Calendar, Check, GraduationCap } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from "framer-motion";
 import SectionShell from "./SectionShell";
 import Reveal from "./Reveal";
 import { EXPERIENCE } from "../data/portfolio";
 
 function TimelineCard({ item, index }) {
+  const cardRef = useRef(null);
   const isCurrent = item.isCurrent;
+
+  const mouseX = useMotionValue(0.5);
+  const mouseY = useMotionValue(0.5);
+
+  const springConfig = { damping: 24, stiffness: 220 };
+  const rotateX = useSpring(useTransform(mouseY, [0, 1], [4, -4]), springConfig);
+  const rotateY = useSpring(useTransform(mouseX, [0, 1], [-4, 4]), springConfig);
+
+  const glowColor = isCurrent ? "rgba(16, 185, 129, 0.16)" : "rgba(59, 130, 246, 0.14)";
+
+  const glareBg = useMotionTemplate`radial-gradient(380px circle at ${useTransform(
+    mouseX,
+    [0, 1],
+    [0, 100]
+  )}% ${useTransform(mouseY, [0, 1], [0, 100])}%, ${glowColor}, transparent 70%)`;
+
+  const onMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    mouseX.set((e.clientX - rect.left) / rect.width);
+    mouseY.set((e.clientY - rect.top) / rect.height);
+  };
+
+  const onMouseLeave = () => {
+    mouseX.set(0.5);
+    mouseY.set(0.5);
+  };
 
   return (
     <Reveal delay={index * 0.1}>
@@ -25,24 +55,37 @@ function TimelineCard({ item, index }) {
           )}
         </div>
 
-        {/* Experience Glassmorphic Card */}
+        {/* Experience Glassmorphic Card with Dynamic Cursor Spotlight */}
         <motion.article
+          ref={cardRef}
+          onMouseMove={onMouseMove}
+          onMouseLeave={onMouseLeave}
           whileHover={{ y: -3 }}
           transition={{ duration: 0.25 }}
+          style={{
+            rotateX,
+            rotateY,
+            transformPerspective: 1000,
+            transformStyle: "preserve-3d",
+          }}
           className={`relative rounded-2xl border bg-[#070B12]/80 p-5 sm:p-7 backdrop-blur-md transition-all duration-300 hover:shadow-[0_20px_45px_-12px_rgba(0,0,0,0.85)] ${
             isCurrent
               ? "border-emerald-500/25 hover:border-emerald-400/40"
               : "border-white/[0.08] hover:border-white/20"
           }`}
         >
-          {/* Subtle ambient card glow */}
-          <div
-            className="pointer-events-none absolute -inset-px -z-10 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          {/* Dynamic cursor-following spotlight glow */}
+          <motion.div
+            className="pointer-events-none absolute -inset-px -z-10 rounded-2xl opacity-60 transition-opacity duration-300 group-hover:opacity-100"
             style={{
-              background: isCurrent
-                ? "radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.12), transparent 70%)"
-                : "radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.08), transparent 70%)",
+              background: glareBg,
             }}
+            aria-hidden="true"
+          />
+
+          {/* Top subtle highlight */}
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent transition-colors group-hover:via-white/35"
             aria-hidden="true"
           />
 

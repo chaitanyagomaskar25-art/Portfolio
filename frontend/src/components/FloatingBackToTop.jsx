@@ -24,7 +24,7 @@ export default function FloatingBackToTop() {
           transition={{ duration: 0.3 }}
           onClick={scrollTop}
           aria-label="Back to top"
-          className="fixed bottom-6 right-6 z-[80] flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500 text-[#04110B] shadow-[0_16px_40px_-12px_rgba(16,185,129,0.7)] transition-colors duration-300 hover:bg-emerald-400"
+          className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-[60] flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-emerald-500 text-[#04110B] shadow-[0_16px_40px_-12px_rgba(16,185,129,0.7)] transition-colors duration-300 hover:bg-emerald-400"
         >
           <ArrowUp className="h-5 w-5" />
         </motion.button>

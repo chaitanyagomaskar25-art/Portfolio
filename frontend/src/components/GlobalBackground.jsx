@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useMotionTemplate, useMotionValue, useSpring } from "framer-motion";
 
 // ============================================================================
-// 3D Mathematical Polyhedra Geometries (Vertices & Triangular Facets)
+// Mathematical Polyhedra Definitions (3D Vertices & Triangular Facets)
 // ============================================================================
 
 const PHI = (1 + Math.sqrt(5)) / 2;
@@ -54,7 +54,7 @@ const CRYSTAL_FACES = [
   [9, 6, 5], [9, 7, 6], [9, 8, 7], [9, 5, 8]
 ];
 
-// 4. 4D Tesseract (Hypercube Wireframe Projection): 16 vertices, 32 struts
+// 4. 4D Hypercube / Tesseract Projection: 16 vertices, 32 struts
 const RAW_TESSERACT = [];
 const sOuter = 1.0;
 const sInner = 0.52;
@@ -90,7 +90,7 @@ for (let i = 0; i < 8; i++) {
   TESSERACT_EDGES.push([i, i + 8]);
 }
 
-// 3D Math Helper: Rotation Matrices
+// 3D Matrix Math Helper: 3-Axis Euler Rotation
 function rotate3D(point, rx, ry, rz) {
   let [x, y, z] = point;
 
@@ -115,7 +115,7 @@ function rotate3D(point, rx, ry, rz) {
   return [x3, y3, z2];
 }
 
-// Project 3D point to 2D screen coordinates with perspective
+// Project 3D point to 2D screen coordinates with camera perspective
 function project3D(point, cx, cy, scale, fov = 480) {
   const [x, y, z] = point;
   const distance = z + fov;
@@ -137,14 +137,13 @@ export default function GlobalBackground() {
   const mouseX = useMotionValue(-1000);
   const mouseY = useMotionValue(-1000);
 
-  const springConfig = { damping: 30, stiffness: 160, mass: 0.6 };
+  const springConfig = { damping: 28, stiffness: 180, mass: 0.5 };
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
 
-  // Volumetric cursor spotlight with multi-chromatic dispersion
-  const spotlightBg = useMotionTemplate`radial-gradient(850px circle at ${smoothX}px ${smoothY}px, rgba(16, 185, 129, 0.05), rgba(56, 189, 248, 0.035), rgba(168, 85, 247, 0.02), transparent 70%)`;
+  // Multi-chromatic volumetric spotlight following user cursor
+  const spotlightBg = useMotionTemplate`radial-gradient(900px circle at ${smoothX}px ${smoothY}px, rgba(16, 185, 129, 0.08), rgba(56, 189, 248, 0.05), rgba(245, 158, 11, 0.025), transparent 70%)`;
 
-  // Detect touch device & listen to global mouse / scroll
   useEffect(() => {
     const checkTouch = () => {
       const hasTouch =
@@ -169,7 +168,7 @@ export default function GlobalBackground() {
     };
   }, [mouseX, mouseY]);
 
-  // Main 3D Canvas Visual Engine
+  // Main 3D Live Interactive Visual Engine
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -190,11 +189,11 @@ export default function GlobalBackground() {
       normY: 0,
     };
 
-    // Camera 3D perspective orientation
+    // Camera 3D perspective orientation with inertial damping
     let camRotX = 0;
     let camRotY = 0;
 
-    // Click wave ripple pulses
+    // Click wave shockwave ripple pulses
     let ripples = [];
 
     const resize = () => {
@@ -228,9 +227,9 @@ export default function GlobalBackground() {
       ripples.push({
         x: e.clientX,
         y: e.clientY,
-        radius: 12,
-        maxRadius: Math.min(w, h) * 0.45,
-        opacity: 0.55,
+        radius: 15,
+        maxRadius: Math.min(w, h) * 0.55,
+        opacity: 0.65,
       });
     };
 
@@ -238,7 +237,23 @@ export default function GlobalBackground() {
     window.addEventListener("mousedown", onMouseDown);
     document.documentElement.addEventListener("mouseleave", onMouseLeave);
 
-    // Dynamic 3D Objects Positioned Along the Entire Portfolio Height
+    // ========================================================================
+    // Interactive 3D Particle Constellation Engine
+    // 90 interconnected particles floating in full 3D space with cursor physics
+    // ========================================================================
+    const PARTICLE_COUNT = Math.min(Math.floor((window.innerWidth * window.innerHeight) / 12000), 90);
+    const particles3D = Array.from({ length: PARTICLE_COUNT }, () => ({
+      x: (Math.random() - 0.5) * 1600,
+      y: (Math.random() - 0.5) * 1400,
+      z: Math.random() * 800 - 300,
+      vx: (Math.random() - 0.5) * 0.6,
+      vy: (Math.random() - 0.5) * 0.6,
+      vz: (Math.random() - 0.5) * 0.5,
+      size: Math.random() * 2.2 + 1.2,
+      baseAlpha: Math.random() * 0.45 + 0.35,
+    }));
+
+    // Dynamic 3D Objects Positioned Along Portfolio Elevation
     const objects3D = [
       // 1. Hero Crystalline Icosahedron
       {
@@ -246,30 +261,30 @@ export default function GlobalBackground() {
         type: "polyhedron",
         rawVertices: RAW_ICOSA_VERTS,
         faces: ICOSA_FACES,
-        baseScale: 85,
+        baseScale: 105,
         relX: 0.82,
-        relY: 0.26,
+        relY: 0.28,
         rx: 0.4,
         ry: 0.5,
         rz: 0.2,
-        rotSpeedX: 0.0035,
-        rotSpeedY: 0.0055,
-        color: "52, 211, 153", // Emerald
-        sectionRange: [0, 0.32],
+        rotSpeedX: 0.0055,
+        rotSpeedY: 0.008,
+        color: "245, 158, 11", // Champagne Amber
+        sectionRange: [0, 0.34],
       },
       // 2. About Multi-Axis Gyro Celestial Sphere
       {
         id: "about-gyro",
         type: "gyro",
-        baseScale: 95,
+        baseScale: 110,
         relX: 0.14,
         relY: 0.38,
         rx: 0.6,
         ry: 0.4,
         rz: 0.5,
-        rotSpeedX: 0.004,
-        rotSpeedY: 0.006,
-        color: "56, 189, 248", // Sky Blue
+        rotSpeedX: 0.005,
+        rotSpeedY: 0.0075,
+        color: "56, 189, 248", // Arctic Sky Blue
         sectionRange: [0.12, 0.45],
       },
       // 3. Projects Gemstone Crystal
@@ -278,15 +293,15 @@ export default function GlobalBackground() {
         type: "polyhedron",
         rawVertices: RAW_CRYSTAL_VERTS,
         faces: CRYSTAL_FACES,
-        baseScale: 90,
+        baseScale: 100,
         relX: 0.88,
         relY: 0.54,
         rx: 0.5,
         ry: 0.7,
         rz: 0.2,
-        rotSpeedX: 0.0045,
-        rotSpeedY: 0.0035,
-        color: "168, 85, 247", // Amethyst Purple
+        rotSpeedX: 0.006,
+        rotSpeedY: 0.005,
+        color: "217, 119, 6", // Ochre Copper
         sectionRange: [0.32, 0.65],
       },
       // 4. Skills 4D Hypercube Tesseract
@@ -295,15 +310,15 @@ export default function GlobalBackground() {
         type: "tesseract",
         rawVertices: RAW_TESSERACT,
         edges: TESSERACT_EDGES,
-        baseScale: 70,
+        baseScale: 85,
         relX: 0.12,
         relY: 0.68,
         rx: 0.7,
         ry: 0.3,
         rz: 0.4,
-        rotSpeedX: 0.005,
-        rotSpeedY: 0.006,
-        color: "20, 184, 166", // Teal
+        rotSpeedX: 0.0065,
+        rotSpeedY: 0.008,
+        color: "16, 185, 129", // Emerald Green
         sectionRange: [0.52, 0.82],
       },
       // 5. Experience Octahedron Star
@@ -312,15 +327,15 @@ export default function GlobalBackground() {
         type: "polyhedron",
         rawVertices: RAW_OCTA_VERTS,
         faces: OCTA_FACES,
-        baseScale: 85,
-        relX: 0.85,
+        baseScale: 98,
+        relX: 0.86,
         relY: 0.78,
         rx: 0.3,
         ry: 0.6,
         rz: 0.1,
-        rotSpeedX: 0.004,
-        rotSpeedY: 0.005,
-        color: "56, 189, 248", // Cyan
+        rotSpeedX: 0.0055,
+        rotSpeedY: 0.007,
+        color: "56, 189, 248", // Ice Blue
         sectionRange: [0.65, 0.92],
       },
       // 6. Contact Floating Core Icosahedron
@@ -329,40 +344,30 @@ export default function GlobalBackground() {
         type: "polyhedron",
         rawVertices: RAW_ICOSA_VERTS,
         faces: ICOSA_FACES,
-        baseScale: 92,
+        baseScale: 108,
         relX: 0.5,
         relY: 0.90,
         rx: 0.2,
         ry: 0.4,
         rz: 0.3,
-        rotSpeedX: 0.003,
-        rotSpeedY: 0.004,
-        color: "52, 211, 153", // Emerald
+        rotSpeedX: 0.0045,
+        rotSpeedY: 0.006,
+        color: "245, 158, 11", // Champagne Amber
         sectionRange: [0.78, 1.0],
       },
     ];
-
-    // Background Ambient 3D Micro-Nodes (Depth Field Stars)
-    const microNodes = Array.from({ length: 45 }, () => ({
-      x: (Math.random() - 0.5) * 1200,
-      y: (Math.random() - 0.5) * 1200,
-      z: Math.random() * 800 - 200,
-      size: Math.random() * 2 + 1,
-      speedZ: Math.random() * 0.4 + 0.2,
-      opacity: Math.random() * 0.5 + 0.2,
-    }));
 
     // Main 3D Animation Render Loop
     const render = () => {
       time += 0.016;
 
-      // Mouse easing with momentum
-      mouse.x += (mouse.targetX - mouse.x) * 0.08;
-      mouse.y += (mouse.targetY - mouse.y) * 0.08;
+      // Mouse easing with fluid physics momentum
+      mouse.x += (mouse.targetX - mouse.x) * 0.1;
+      mouse.y += (mouse.targetY - mouse.y) * 0.1;
 
       // 3D Camera parallax shift based on cursor
-      camRotX += (mouse.normY * 0.08 - camRotX) * 0.05;
-      camRotY += (mouse.normX * 0.08 - camRotY) * 0.05;
+      camRotX += (mouse.normY * 0.12 - camRotX) * 0.06;
+      camRotY += (mouse.normX * 0.12 - camRotY) * 0.06;
 
       ctx.clearRect(0, 0, w, h);
 
@@ -374,65 +379,151 @@ export default function GlobalBackground() {
       );
       const scrollNorm = currentScroll / docHeight;
 
-      // Dynamic Light Vector (directional light source shifting with mouse)
+      // Dynamic 3D Light Source vector tracking cursor
       const lightVec = [
-        -0.3 + mouse.normX * 0.25,
-        -0.6 + mouse.normY * 0.25,
-        0.75,
+        -0.3 + mouse.normX * 0.35,
+        -0.6 + mouse.normY * 0.35,
+        0.8,
       ];
       const lightLen = Math.hypot(...lightVec);
       const normLight = lightVec.map((v) => v / lightLen);
 
       // ======================================================================
-      // 1. 3D Micro-Node Depth Field (Drifting Celestial Depth Stars)
+      // 1. Interactive 3D Particle Constellation (Spatial Gravity & Connections)
       // ======================================================================
       ctx.save();
       const nodeCenterX = w * 0.5;
       const nodeCenterY = h * 0.5;
+      const projectedParticles = [];
 
-      for (const node of microNodes) {
-        node.z -= node.speedZ;
-        if (node.z < -180) node.z = 600;
+      for (let i = 0; i < particles3D.length; i++) {
+        const p = particles3D[i];
 
-        const fov = 450;
-        const dist = node.z + fov;
+        // Animate position
+        p.x += p.vx;
+        p.y += p.vy;
+        p.z += p.vz;
+
+        // Wrap around in 3D volume
+        if (p.x < -800) p.x = 800;
+        if (p.x > 800) p.x = -800;
+        if (p.y < -700) p.y = 700;
+        if (p.y > 700) p.y = -700;
+        if (p.z < -250) p.z = 500;
+        if (p.z > 500) p.z = -250;
+
+        // 3D Camera Rotation
+        const rotY = p.x * Math.cos(camRotY) - p.z * Math.sin(camRotY);
+        const rotZ1 = p.x * Math.sin(camRotY) + p.z * Math.cos(camRotY);
+        const rotX = p.y * Math.cos(camRotX) - rotZ1 * Math.sin(camRotX);
+        const rotZ2 = p.y * Math.sin(camRotX) + rotZ1 * Math.cos(camRotX);
+
+        const fov = 500;
+        const dist = rotZ2 + fov;
         if (dist <= 0) continue;
         const factor = fov / dist;
 
-        // Apply camera tilt
-        const rotX = node.x * Math.cos(camRotY) - node.z * Math.sin(camRotY);
-        const rotZ = node.x * Math.sin(camRotY) + node.z * Math.cos(camRotY);
-        const projX = nodeCenterX + rotX * factor;
-        const projY = nodeCenterY + node.y * factor;
+        const screenX = nodeCenterX + rotY * factor;
+        const screenY = nodeCenterY + rotX * factor;
 
-        if (projX < 0 || projX > w || projY < 0 || projY > h) continue;
+        // Interactive cursor repulsion / orbital gravitation
+        let interactionFactor = 1;
+        if (mouse.x > -1000) {
+          const dx = screenX - mouse.x;
+          const dy = screenY - mouse.y;
+          const mouseDist = Math.hypot(dx, dy);
+          if (mouseDist < 160 && mouseDist > 1) {
+            interactionFactor = 1 + (1 - mouseDist / 160) * 1.5;
+            // Soft push
+            p.vx += (dx / mouseDist) * 0.15;
+            p.vy += (dy / mouseDist) * 0.15;
+          }
+        }
 
-        const alpha = node.opacity * (1 - node.z / 650) * (isLight ? 0.25 : 0.45);
+        // Apply friction to velocities
+        p.vx *= 0.985;
+        p.vy *= 0.985;
+
+        if (screenX >= -50 && screenX <= w + 50 && screenY >= -50 && screenY <= h + 50) {
+          projectedParticles.push({
+            screenX,
+            screenY,
+            z: rotZ2,
+            size: p.size * factor * interactionFactor,
+            alpha: p.baseAlpha * (1 - rotZ2 / 650) * (isLight ? 0.35 : 0.65),
+          });
+        }
+      }
+
+      // Draw Constellation Connecting Lines in 3D
+      const connectionDist = w < 768 ? 95 : 130;
+      for (let i = 0; i < projectedParticles.length; i++) {
+        const p1 = projectedParticles[i];
+        for (let j = i + 1; j < projectedParticles.length; j++) {
+          const p2 = projectedParticles[j];
+          const dx = p1.screenX - p2.screenX;
+          const dy = p1.screenY - p2.screenY;
+          const d = Math.hypot(dx, dy);
+
+          if (d < connectionDist) {
+            const lineAlpha = (1 - d / connectionDist) * 0.22 * Math.min(p1.alpha, p2.alpha);
+            ctx.strokeStyle = isLight
+              ? `rgba(13, 148, 136, ${lineAlpha})`
+              : `rgba(52, 211, 153, ${lineAlpha * 1.3})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(p1.screenX, p1.screenY);
+            ctx.lineTo(p2.screenX, p2.screenY);
+            ctx.stroke();
+          }
+        }
+
+        // Connect directly to cursor if nearby
+        if (mouse.x > -1000) {
+          const mdx = p1.screenX - mouse.x;
+          const mdy = p1.screenY - mouse.y;
+          const md = Math.hypot(mdx, mdy);
+          if (md < 140) {
+            const lineAlpha = (1 - md / 140) * 0.35;
+            ctx.strokeStyle = isLight
+              ? `rgba(16, 185, 129, ${lineAlpha})`
+              : `rgba(56, 189, 248, ${lineAlpha * 1.4})`;
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(p1.screenX, p1.screenY);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw Glowing 3D Particles
+      for (const p of projectedParticles) {
         ctx.fillStyle = isLight
-          ? `rgba(5, 150, 105, ${alpha})`
-          : `rgba(167, 243, 208, ${alpha})`;
+          ? `rgba(15, 118, 110, ${p.alpha})`
+          : `rgba(167, 243, 208, ${p.alpha})`;
         ctx.beginPath();
-        ctx.arc(projX, projY, node.size * factor, 0, Math.PI * 2);
+        ctx.arc(p.screenX, p.screenY, p.size, 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.restore();
 
       // ======================================================================
-      // 2. Digital Horizon Perspective Landscape (Undulating Harmonic Grid)
+      // 2. 3D Digital Horizon Perspective Landscape (Harmonic Wave Grid)
       // ======================================================================
-      const horizonY = h * 0.68;
-      const gridCols = w < 768 ? 14 : 26;
-      const gridRows = w < 768 ? 8 : 13;
+      const horizonY = h * 0.65;
+      const gridCols = w < 768 ? 16 : 28;
+      const gridRows = w < 768 ? 9 : 14;
 
       ctx.save();
       for (let r = 0; r < gridRows; r++) {
         const rowNorm = r / gridRows;
         const perspectiveDepth = Math.pow(rowNorm, 2.2);
         const y = horizonY + (h - horizonY) * perspectiveDepth;
-        const lineAlpha = (1 - rowNorm * 0.65) * (isLight ? 0.05 : 0.08);
+        const lineAlpha = (1 - rowNorm * 0.6) * (isLight ? 0.06 : 0.12);
 
         ctx.strokeStyle = isLight
-          ? `rgba(5, 150, 105, ${lineAlpha})`
+          ? `rgba(13, 148, 136, ${lineAlpha})`
           : `rgba(16, 185, 129, ${lineAlpha})`;
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -443,17 +534,17 @@ export default function GlobalBackground() {
 
           // Undulating wave harmonics
           const wave =
-            Math.sin(colNorm * 8 + time * 1.2) *
-            Math.cos(rowNorm * 4 + time * 0.8) *
-            (6 + rowNorm * 10);
+            Math.sin(colNorm * 7 + time * 1.4) *
+            Math.cos(rowNorm * 4 + time * 0.9) *
+            (7 + rowNorm * 12);
 
           // Interactive mouse depression / gravity ripple
           const dx = x - mouse.x;
           const dy = y - mouse.y;
           const dist = Math.hypot(dx, dy);
           let mouseWave = 0;
-          if (dist < 220 && dist > 0.1) {
-            mouseWave = Math.sin((dist / 220) * Math.PI) * -16;
+          if (dist < 240 && dist > 0.1) {
+            mouseWave = Math.sin((dist / 240) * Math.PI) * -18;
           }
 
           const finalY = y + wave + mouseWave;
@@ -463,15 +554,15 @@ export default function GlobalBackground() {
         ctx.stroke();
       }
 
-      // Vertical converging perspective perspective lines
+      // Vertical converging perspective grid lines
       for (let c = 0; c <= gridCols; c += 2) {
         const colNorm = c / gridCols;
         const bottomX = colNorm * w;
         const topX = w * 0.5 + (colNorm - 0.5) * w * 0.35;
 
         ctx.strokeStyle = isLight
-          ? `rgba(37, 99, 235, 0.035)`
-          : `rgba(56, 189, 248, 0.05)`;
+          ? `rgba(37, 99, 235, 0.04)`
+          : `rgba(56, 189, 248, 0.07)`;
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(topX, horizonY);
@@ -480,14 +571,14 @@ export default function GlobalBackground() {
       }
 
       // Horizon atmospheric line glow
-      const horizonGrad = ctx.createLinearGradient(0, horizonY - 1, 0, horizonY + 24);
+      const horizonGrad = ctx.createLinearGradient(0, horizonY - 1, 0, horizonY + 30);
       horizonGrad.addColorStop(
         0,
-        isLight ? "rgba(5, 150, 105, 0.1)" : "rgba(16, 185, 129, 0.16)"
+        isLight ? "rgba(13, 148, 136, 0.12)" : "rgba(16, 185, 129, 0.22)"
       );
       horizonGrad.addColorStop(1, "transparent");
       ctx.fillStyle = horizonGrad;
-      ctx.fillRect(0, horizonY - 1, w, 24);
+      ctx.fillRect(0, horizonY - 1, w, 30);
       ctx.restore();
 
       // ======================================================================
@@ -495,8 +586,8 @@ export default function GlobalBackground() {
       // ======================================================================
       for (let i = ripples.length - 1; i >= 0; i--) {
         const rip = ripples[i];
-        rip.radius += 4.5;
-        rip.opacity *= 0.96;
+        rip.radius += 5;
+        rip.opacity *= 0.95;
 
         if (rip.opacity < 0.01 || rip.radius > rip.maxRadius) {
           ripples.splice(i, 1);
@@ -505,9 +596,9 @@ export default function GlobalBackground() {
 
         ctx.save();
         ctx.strokeStyle = isLight
-          ? `rgba(5, 150, 105, ${rip.opacity * 0.45})`
-          : `rgba(52, 211, 153, ${rip.opacity * 0.55})`;
-        ctx.lineWidth = 1.5;
+          ? `rgba(13, 148, 136, ${rip.opacity * 0.5})`
+          : `rgba(52, 211, 153, ${rip.opacity * 0.7})`;
+        ctx.lineWidth = 1.8;
         ctx.beginPath();
         ctx.arc(rip.x, rip.y, rip.radius, 0, Math.PI * 2);
         ctx.stroke();
@@ -518,7 +609,6 @@ export default function GlobalBackground() {
       // 4. Floating 3D Geometric Polyhedra & Crystalline Engine
       // ======================================================================
       for (const obj of objects3D) {
-        // Calculate visibility weight based on scroll elevation
         const [start, end] = obj.sectionRange;
         const mid = (start + end) / 2;
         const span = (end - start) / 2;
@@ -528,37 +618,36 @@ export default function GlobalBackground() {
         if (visibility <= 0) continue;
         visibility = Math.min(Math.max(visibility, 0), 1);
 
-        // Center position with parallax scrolling offset
         const cx = obj.relX * w;
-        const scrollOffset = (scrollNorm - mid) * -190;
+        const scrollOffset = (scrollNorm - mid) * -220;
         const cy = obj.relY * h + scrollOffset;
 
-        // Interactive mouse proximity & torque
+        // Interactive mouse proximity, torque, and hover rotation
         const mdx = mouse.x - cx;
         const mdy = mouse.y - cy;
         const mouseDist = Math.hypot(mdx, mdy);
         const mouseInfluence =
-          mouseDist < 360 ? (1 - mouseDist / 360) * 0.8 : 0;
+          mouseDist < 400 ? (1 - mouseDist / 400) * 1.0 : 0;
 
-        obj.rx += obj.rotSpeedX + mouse.speedY * 0.0003 + mouseInfluence * 0.008;
-        obj.ry += obj.rotSpeedY + mouse.speedX * 0.0003 + mouseInfluence * 0.01;
-        obj.rz += 0.002;
+        obj.rx += obj.rotSpeedX + mouse.speedY * 0.0004 + mouseInfluence * 0.012;
+        obj.ry += obj.rotSpeedY + mouse.speedX * 0.0004 + mouseInfluence * 0.015;
+        obj.rz += 0.0025;
 
         const currentScale =
-          obj.baseScale * (1 + mouseInfluence * 0.15) * (w < 768 ? 0.7 : 1);
+          obj.baseScale * (1 + mouseInfluence * 0.2) * (w < 768 ? 0.75 : 1);
         const objAlpha =
-          (isLight ? 0.22 : 0.38) *
+          (isLight ? 0.3 : 0.52) *
           visibility *
-          (1 + mouseInfluence * 0.4);
+          (1 + mouseInfluence * 0.5);
 
         ctx.save();
 
         if (obj.type === "gyro") {
-          // Render concentric Gyro-Orbital Rings with Depth-Perspective
+          // Render concentric Gyro-Orbital Rings with 3D Depth
           for (let ring = 0; ring < 3; ring++) {
             const ringRadius = currentScale * (1 - ring * 0.28);
-            ctx.strokeStyle = `rgba(${obj.color}, ${objAlpha * (0.8 - ring * 0.15)})`;
-            ctx.lineWidth = 1.3;
+            ctx.strokeStyle = `rgba(${obj.color}, ${objAlpha * (0.85 - ring * 0.15)})`;
+            ctx.lineWidth = 1.5;
             ctx.beginPath();
             ctx.ellipse(
               cx,
@@ -578,9 +667,8 @@ export default function GlobalBackground() {
             return project3D(rot, cx, cy, currentScale);
           });
 
-          // Outer and inner cube struts
-          ctx.strokeStyle = `rgba(${obj.color}, ${objAlpha})`;
-          ctx.lineWidth = 1;
+          ctx.strokeStyle = `rgba(${obj.color}, ${objAlpha * 1.1})`;
+          ctx.lineWidth = 1.2;
           for (const [i, j] of obj.edges) {
             const p1 = projected[i];
             const p2 = projected[j];
@@ -595,18 +683,17 @@ export default function GlobalBackground() {
           // Illuminated vertex hubs
           for (const p of projected) {
             if (!p) continue;
-            const dotSize = (p.scale || 1) * 2;
-            ctx.fillStyle = `rgba(${obj.color}, ${objAlpha * 1.6})`;
+            const dotSize = (p.scale || 1) * 2.4;
+            ctx.fillStyle = `rgba(${obj.color}, ${objAlpha * 1.8})`;
             ctx.beginPath();
             ctx.arc(p.x, p.y, dotSize, 0, Math.PI * 2);
             ctx.fill();
           }
         } else if (obj.type === "polyhedron") {
-          // Genuine 3D Crystalline Facets with Lambertian Light Shading & Painter's Depth Sorting
+          // Genuine 3D Crystalline Facets with Lambertian Light Shading & Painter's Sorting
           const rotatedVerts = obj.rawVertices.map((v) => rotate3D(v, obj.rx, obj.ry, obj.rz));
           const projectedVerts = rotatedVerts.map((rot) => project3D(rot, cx, cy, currentScale));
 
-          // Calculate faces with depth and surface normals
           const renderedFaces = [];
           for (const [i, j, k] of obj.faces) {
             const rA = rotatedVerts[i];
@@ -632,30 +719,24 @@ export default function GlobalBackground() {
             const nny = ny / normLen;
             const nnz = nz / normLen;
 
-            // Average Z for Painter's algorithm depth sorting
             const avgZ = (rA[2] + rB[2] + rC[2]) / 3;
-
-            // Lambertian lighting calculation
             const dot = nnx * normLight[0] + nny * normLight[1] + nnz * normLight[2];
-            const lightIntensity = Math.max(0.12, (dot + 1) * 0.5);
+            const lightIntensity = Math.max(0.15, (dot + 1) * 0.5);
 
             renderedFaces.push({
               pA, pB, pC,
               avgZ,
               lightIntensity,
-              facing: nnz > 0, // Facing towards camera
+              facing: nnz > 0,
             });
           }
 
-          // Sort faces back to front
           renderedFaces.sort((a, b) => a.avgZ - b.avgZ);
 
-          // Draw Shaded 3D Facets
           for (const face of renderedFaces) {
             const { pA, pB, pC, lightIntensity, facing } = face;
 
-            // Translucent crystal fill
-            const fillAlpha = objAlpha * (facing ? 0.35 : 0.12) * lightIntensity;
+            const fillAlpha = objAlpha * (facing ? 0.42 : 0.16) * lightIntensity;
             ctx.fillStyle = `rgba(${obj.color}, ${fillAlpha})`;
             ctx.beginPath();
             ctx.moveTo(pA.x, pA.y);
@@ -664,18 +745,17 @@ export default function GlobalBackground() {
             ctx.closePath();
             ctx.fill();
 
-            // Edge highlight
-            const edgeAlpha = objAlpha * (facing ? 0.85 : 0.35) * (0.5 + lightIntensity * 0.5);
+            const edgeAlpha = objAlpha * (facing ? 0.95 : 0.45) * (0.5 + lightIntensity * 0.5);
             ctx.strokeStyle = `rgba(${obj.color}, ${edgeAlpha})`;
-            ctx.lineWidth = facing ? 1.2 : 0.8;
+            ctx.lineWidth = facing ? 1.4 : 0.9;
             ctx.stroke();
           }
 
           // Illuminated vertex beacons
           for (const p of projectedVerts) {
             if (!p) continue;
-            const dotSize = (p.scale || 1) * 2.2;
-            ctx.fillStyle = `rgba(${obj.color}, ${objAlpha * 1.8})`;
+            const dotSize = (p.scale || 1) * 2.5;
+            ctx.fillStyle = `rgba(${obj.color}, ${objAlpha * 2.0})`;
             ctx.beginPath();
             ctx.arc(p.x, p.y, dotSize, 0, Math.PI * 2);
             ctx.fill();
@@ -718,11 +798,11 @@ export default function GlobalBackground() {
       {/* 3. Main 3D Interactive Cyber Engine Canvas */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 h-full w-full opacity-90"
+        className="absolute inset-0 h-full w-full opacity-95"
       />
 
       {/* 4. Multi-Section Atmospheric Aurora Layers */}
-      {/* Hero / About: Emerald Aurora Glow */}
+      {/* Hero / About: Warm Champagne Amber Glow */}
       <motion.div
         animate={{
           scale: [1, 1.25, 1],
@@ -730,10 +810,10 @@ export default function GlobalBackground() {
           y: [0, -30, 0],
         }}
         transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-36 -left-36 h-[650px] w-[650px] rounded-full bg-emerald-500/[0.055] blur-[160px]"
+        className="absolute -top-36 -left-36 h-[680px] w-[680px] rounded-full bg-amber-500/[0.05] blur-[160px]"
       />
 
-      {/* Projects / Skills: Electric Cyan & Blue Aurora */}
+      {/* Projects / Skills: Glacial Sky Blue Aurora */}
       <motion.div
         animate={{
           scale: [1, 1.2, 1],
@@ -741,20 +821,20 @@ export default function GlobalBackground() {
           y: [0, 45, 0],
         }}
         transition={{ duration: 20, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute top-1/3 -right-36 h-[620px] w-[620px] rounded-full bg-sky-500/[0.045] blur-[160px]"
+        className="absolute top-1/3 -right-36 h-[650px] w-[650px] rounded-full bg-sky-500/[0.05] blur-[160px]"
       />
 
-      {/* Experience: Teal & Jade Atmospheric Core */}
+      {/* Experience: Architectural Titanium / Emerald Glow */}
       <motion.div
         animate={{
           scale: [1, 1.18, 1],
-          opacity: [0.03, 0.06, 0.03],
+          opacity: [0.035, 0.07, 0.035],
         }}
         transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        className="absolute top-2/3 left-1/4 h-[550px] w-[550px] rounded-full bg-teal-500/[0.04] blur-[170px]"
+        className="absolute top-2/3 left-1/4 h-[580px] w-[580px] rounded-full bg-emerald-500/[0.04] blur-[170px]"
       />
 
-      {/* Contact: Violet & Amethyst Convergence Sphere */}
+      {/* Contact: Warm Ochre Convergence Sphere */}
       <motion.div
         animate={{
           scale: [1, 1.22, 1],
@@ -762,7 +842,7 @@ export default function GlobalBackground() {
           y: [0, -25, 0],
         }}
         transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-        className="absolute -bottom-36 left-1/3 h-[680px] w-[680px] rounded-full bg-purple-500/[0.04] blur-[180px]"
+        className="absolute -bottom-36 left-1/3 h-[700px] w-[700px] rounded-full bg-amber-500/[0.04] blur-[180px]"
       />
     </div>
   );

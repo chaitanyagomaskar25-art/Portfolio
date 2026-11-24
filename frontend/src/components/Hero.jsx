@@ -10,7 +10,7 @@ const EASE = [0.22, 1, 0.36, 1];
 const CODE = `const developer = {
   name: "Chaitanya Gomaskar",
   role: "Full-Stack Developer",
-  stack: ["React", "TypeScript", "Python", "FastAPI"],
+  stack: ["React", "JavaScript", "Python", "FastAPI"],
   passion: "clean, resilient systems",
   status: "open_to_work",
 };`;
@@ -127,7 +127,7 @@ export default function Hero() {
               Available for new opportunities
             </motion.p>
 
-            <h1 className="mt-9 font-display text-[clamp(3rem,8.2vw,7rem)] font-bold leading-[0.94] tracking-[-0.025em] text-slate-50">
+            <h1 className="mt-7 sm:mt-9 font-display text-[clamp(2.5rem,8vw,7rem)] font-bold leading-[0.96] tracking-[-0.025em] text-slate-50 break-words">
               <MaskLine delay={0.2}>{PROFILE.name}</MaskLine>
               <MaskLine delay={0.34}>
                 <span className="text-gradient pr-2 font-serif font-normal italic tracking-normal">
